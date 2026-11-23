@@ -1,4 +1,6 @@
 // Data contoh di memori. Nanti diganti data dari REST API.
+import type { IconName } from "../components/Icon";
+
 export type StatusPengajuan = "Menunggu" | "Disetujui" | "Ditolak";
 
 export type PengajuanItem = {
@@ -75,6 +77,19 @@ export const slipSaya = [
   { id: 4, periode: "Juli 2026", diunggah: "25 Jul" },
   { id: 5, periode: "Juni 2026", diunggah: "25 Jun" },
 ];
+
+export function notifikasiHR() {
+  return pengajuanSemua
+    .filter((p) => p.status === "Menunggu")
+    .map((p) => ({
+      id: p.id,
+      ikon: "file-text" as IconName,
+      judul: `Pengajuan ${p.jenis}`,
+      isi: `${p.nama} mengajukan ${p.jenis}, ${p.tanggal}.`,
+      waktu: p.diajukan,
+      baru: true,
+    }));
+}
 
 // Ganti dengan koordinat kantor Anda. Validasi resmi tetap dilakukan di server.
 export const kantor = { nama: "Kantor Pusat", latitude: -6.1754, longitude: 106.8272, radiusMeter: 100 };

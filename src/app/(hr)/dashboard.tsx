@@ -4,13 +4,11 @@ import Screen from "../../components/Screen";
 import Avatar from "../../components/Avatar";
 import Button from "../../components/Button";
 import Icon, { IconName } from "../../components/Icon";
-import { CircleButton } from "../../components/Header";
 import ListRow from "../../components/ListRow";
 import StatusPill from "../../components/StatusPill";
 import { useAuth } from "../../context/AuthContext";
 import { pengajuanSemua, kehadiranHariIni } from "../../data/dummy";
-import { salam, tanggalPanjang } from "../../utils/format";
-import { notify } from "../../utils/notify";
+import { salam } from "../../utils/format";
 import { useFocusRefresh } from "../../utils/useFocusRefresh";
 import { colors, fonts } from "../../constants/theme";
 
@@ -46,9 +44,20 @@ export default function Dashboard() {
           <Text style={s.sapa}>{salam()}</Text>
           <Text style={s.nama}>{user?.nama}</Text>
         </View>
+
+        {/* Tombol notifikasi */}
         <View>
-          <CircleButton name="bell" onPress={() => notify("Notifikasi", "Notifikasi HR akan tampil di sini.")} />
-          {menunggu.length > 0 ? <View style={s.titik} /> : null}
+          <Pressable
+            onPress={() => {
+              console.log("tombol notifikasi ditekan");
+              router.push("/notifikasi");
+            }}
+            hitSlop={8}
+            style={s.tombolBel}
+          >
+            <Icon name="bell" size={22} color={colors.primary} />
+          </Pressable>
+          {menunggu.length > 0 ? <View style={s.titik} pointerEvents="none" /> : null}
         </View>
       </View>
 
@@ -91,7 +100,7 @@ export default function Dashboard() {
       ))}
       {menunggu.length === 0 ? <Text style={s.kosong}>Tidak ada pengajuan yang menunggu.</Text> : null}
       <Pressable onPress={() => router.push("/monitoring")} style={{ marginTop: 18 }}>
-        <Text style={s.lihat}>Monitoring kehadiran ({kehadiranHariIni.length} data) </Text>
+        <Text style={s.lihat}>Monitoring kehadiran ({kehadiranHariIni.length} data)</Text>
       </Pressable>
     </Screen>
   );
@@ -101,6 +110,14 @@ const s = StyleSheet.create({
   atas: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 22 },
   sapa: { fontSize: 13, color: colors.muted, fontFamily: fonts.medium },
   nama: { fontSize: 18, color: colors.text, fontFamily: fonts.bold, marginTop: 1 },
+  tombolBel: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.surface,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   titik: { position: "absolute", top: 10, right: 11, width: 10, height: 10, borderRadius: 5, backgroundColor: colors.peach, borderWidth: 2, borderColor: "#fff" },
   hero: { marginHorizontal: -4, backgroundColor: colors.tint, borderWidth: 1, borderColor: colors.tintBorder, borderRadius: 26, padding: 22 },
   heroLabel: { fontSize: 13, color: colors.muted, fontFamily: fonts.medium },
