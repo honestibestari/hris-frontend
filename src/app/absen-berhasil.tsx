@@ -5,24 +5,43 @@ import Button from "../components/Button";
 import Icon from "../components/Icon";
 import StatusPill from "../components/StatusPill";
 import { KeyValue } from "../components/ListRow";
+import { useAuth } from "../context/AuthContext";
 import { kantor } from "../data/dummy";
+import { MODE_SS, karyawanDemo } from "../data/demo";
 import { tanggalPanjang } from "../utils/format";
 import { colors, fonts } from "../constants/theme";
 
 export default function AbsenBerhasil() {
   const router = useRouter();
-  const { jam, jarak } = useLocalSearchParams<{ jam: string; jarak: string }>();
-  const terlambat = (jam ?? "00:00") > "08:00";
+  const { user } = useAuth();
+  const params = useLocalSearchParams<{ jam: string; jarak: string }>();
+  const jam = params.jam ?? (MODE_SS ? karyawanDemo.jam : "00:00");
+  const jarak = params.jarak ?? (MODE_SS ? String(karyawanDemo.jarak) : "0");
+  const terlambat = jam > "08:00";
+
+  const karyawan = MODE_SS
+    ? karyawanDemo
+    : {
+        nama: user?.nama ?? "-",
+        nik: user?.nik ?? "-",
+        jabatan: user?.jabatan ?? "-",
+        departemen: user?.departemen ?? "-",
+      };
+
   return (
-    <Screen padX={28} scroll={false} footer={<Button title="Selesai" onPress={() => router.replace("/beranda")} />}>
-      <View style={{ height: 57 }} />
+    <Screen footer={<Button title="Selesai" onPress={() => router.replace("/beranda")} />}>
+      <View style={{ height: 24 }} />
       <View style={{ alignItems: "center" }}>
         <View style={s.lingkaran}><Icon name="check-circle" size={48} color={colors.primary} /></View>
         <Text style={s.judul}>Absen berhasil</Text>
         <Text style={s.jam}>{jam}</Text>
         <Text style={s.tgl}>{tanggalPanjang()}</Text>
       </View>
-      <View style={{ marginTop: 34 }}>
+      <View style={{ marginTop: 30 }}>
+        <KeyValue k="Nama" v={karyawan.nama} />
+        <KeyValue k="NIK" v={karyawan.nik} />
+        <KeyValue k="Jabatan" v={karyawan.jabatan} />
+        <KeyValue k="Departemen" v={karyawan.departemen} />
         <KeyValue k="Lokasi" v={`${kantor.nama}, ${jarak} m`} />
         <KeyValue k="Tipe" v="Absensi offline" />
         <View style={s.status}>

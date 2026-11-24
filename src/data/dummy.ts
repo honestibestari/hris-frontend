@@ -49,11 +49,14 @@ export type KaryawanItem = {
 };
 
 export const daftarKaryawan: KaryawanItem[] = [
-  { id: 1, nama: "Karyawan A", jabatan: "Staf Keuangan", departemen: "Keuangan", nik: "1001", email: "a@perusahaan.com", hp: "0811111111", sisaCuti: 8, kontrak: "PKWT", kontrakBerakhir: "31 Des 2026", kontrakStatus: "Aktif" },
-  { id: 2, nama: "Karyawan B", jabatan: "Staf Pemasaran", departemen: "Pemasaran", nik: "1002", email: "b@perusahaan.com", hp: "0822222222", sisaCuti: 11, kontrak: "PKWT", kontrakBerakhir: "30 Nov 2026", kontrakStatus: "Hampir habis" },
-  { id: 3, nama: "Karyawan C", jabatan: "Staf IT", departemen: "Teknologi", nik: "1003", email: "c@perusahaan.com", hp: "0833333333", sisaCuti: 3, kontrak: "PKWTT", kontrakBerakhir: "Tetap", kontrakStatus: "Aktif" },
-  { id: 4, nama: "Karyawan D", jabatan: "Staf Umum", departemen: "Umum", nik: "1004", email: "d@perusahaan.com", hp: "0844444444", sisaCuti: 12, kontrak: "PKWT", kontrakBerakhir: "15 Nov 2026", kontrakStatus: "Hampir habis" },
-  { id: 5, nama: "Karyawan E", jabatan: "Staf Operasional", departemen: "Operasional", nik: "1005", email: "e@perusahaan.com", hp: "0855555555", sisaCuti: 9, kontrak: "PKWT", kontrakBerakhir: "31 Des 2026", kontrakStatus: "Aktif" },
+  { id: 1, nama: "Andini Putri", jabatan: "Staf Keuangan", departemen: "Keuangan", nik: "1001", email: "andini.putri@perusahaan.com", hp: "081234567801", sisaCuti: 8, kontrak: "PKWT", kontrakBerakhir: "31 Des 2026", kontrakStatus: "Aktif" },
+  { id: 2, nama: "Bagas Setiawan", jabatan: "Staf Pemasaran", departemen: "Pemasaran", nik: "1002", email: "bagas.setiawan@perusahaan.com", hp: "081234567802", sisaCuti: 11, kontrak: "PKWT", kontrakBerakhir: "15 Des 2026", kontrakStatus: "Hampir habis" },
+  { id: 3, nama: "Citra Maharani", jabatan: "Staf IT", departemen: "Teknologi", nik: "1003", email: "citra.maharani@perusahaan.com", hp: "081234567803", sisaCuti: 3, kontrak: "PKWTT", kontrakBerakhir: "Tetap", kontrakStatus: "Aktif" },
+  { id: 4, nama: "Dimas Prakoso", jabatan: "Staf Umum", departemen: "Umum", nik: "1004", email: "dimas.prakoso@perusahaan.com", hp: "081234567804", sisaCuti: 12, kontrak: "PKWT", kontrakBerakhir: "10 Des 2026", kontrakStatus: "Hampir habis" },
+  { id: 5, nama: "Rizky Pratama", jabatan: "Staf Operasional", departemen: "Operasional", nik: "1005", email: "rizky.pratama@perusahaan.com", hp: "081234567805", sisaCuti: 9, kontrak: "PKWT", kontrakBerakhir: "31 Des 2026", kontrakStatus: "Aktif" },
+  { id: 6, nama: "Salsabila Nur", jabatan: "Staf HRD", departemen: "Sumber Daya Manusia", nik: "1006", email: "salsabila.nur@perusahaan.com", hp: "081234567806", sisaCuti: 7, kontrak: "PKWTT", kontrakBerakhir: "Tetap", kontrakStatus: "Aktif" },
+  { id: 7, nama: "Teguh Wibowo", jabatan: "Staf Gudang", departemen: "Logistik", nik: "1007", email: "teguh.wibowo@perusahaan.com", hp: "081234567807", sisaCuti: 10, kontrak: "PKWT", kontrakBerakhir: "28 Feb 2027", kontrakStatus: "Aktif" },
+  { id: 8, nama: "Vina Anggraini", jabatan: "Staf Administrasi", departemen: "Umum", nik: "1008", email: "vina.anggraini@perusahaan.com", hp: "081234567808", sisaCuti: 5, kontrak: "PKWT", kontrakBerakhir: "31 Jan 2027", kontrakStatus: "Aktif" },
 ];
 
 export const kehadiranHariIni = [

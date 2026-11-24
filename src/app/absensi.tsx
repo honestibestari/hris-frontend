@@ -7,8 +7,11 @@ import Screen from "../components/Screen";
 import Header from "../components/Header";
 import Button from "../components/Button";
 import Icon from "../components/Icon";
+import Avatar from "../components/Avatar";
 import MapPreview from "../components/MapPreview";
+import { useAuth } from "../context/AuthContext";
 import { kantor, statusAbsen, riwayatAbsensi, daftarBulan } from "../data/dummy";
+import { MODE_SS, karyawanDemo } from "../data/demo";
 import { hitungJarakMeter } from "../utils/geo";
 import { bulanTahun, hariSingkat, jamMenit } from "../utils/format";
 import { notify } from "../utils/notify";
@@ -16,11 +19,27 @@ import { colors, fonts } from "../constants/theme";
 
 export default function Absensi() {
   const router = useRouter();
+  const { user } = useAuth();
   const [jarak, setJarak] = useState<number | null>(null);
   const [pesan, setPesan] = useState("Mencari lokasi Anda...");
   const [foto, setFoto] = useState<string | null>(null);
 
+  const karyawan = MODE_SS
+    ? karyawanDemo
+    : {
+        nama: user?.nama ?? "-",
+        nik: user?.nik ?? "-",
+        jabatan: user?.jabatan ?? "-",
+        departemen: user?.departemen ?? "-",
+      };
+
   const cekLokasi = async () => {
+    // Mode screenshot: langsung di dalam radius, tanpa GPS.
+    if (MODE_SS) {
+      setJarak(karyawanDemo.jarak);
+      setPesan("");
+      return;
+    }
     setJarak(null);
     setPesan("Mencari lokasi Anda...");
     try {
@@ -40,6 +59,7 @@ export default function Absensi() {
   }, []);
 
   const ambilSelfie = async () => {
+    if (MODE_SS) return;
     try {
       const izin = await ImagePicker.requestCameraPermissionsAsync();
       if (!izin.granted) return notify("Kamera", "Izin kamera diperlukan untuk selfie.");
@@ -52,10 +72,11 @@ export default function Absensi() {
 
   const dalam = jarak !== null && jarak <= kantor.radiusMeter;
   const luar = jarak !== null && !dalam;
+  const adaFoto = MODE_SS || !!foto;
 
   const absen = () => {
     // TODO: kirim koordinat dan foto ke REST API. Server memvalidasi geofence ulang.
-    const jam = jamMenit();
+    const jam = MODE_SS ? karyawanDemo.jam : jamMenit();
     statusAbsen.jam = jam;
     const bulan = bulanTahun();
     if (!daftarBulan.includes(bulan)) daftarBulan.push(bulan);
@@ -77,14 +98,14 @@ export default function Absensi() {
         ) : (
           <View>
             <Text style={s.catatan}>Waktu absen dicatat oleh server</Text>
-            <Button title="Absen masuk" onPress={absen} disabled={!dalam || !foto} />
+            <Button title="Absen masuk" onPress={absen} disabled={!dalam || !adaFoto} />
           </View>
         )
       }
     >
       <Header title="Absensi offline" />
       <View style={{ marginHorizontal: -4 }}>
-        <MapPreview height={luar ? 200 : 252} user={luar ? { x: 78, y: 70 } : undefined} />
+        <MapPreview height={luar ? 200 : 232} user={luar ? { x: 78, y: 70 } : undefined} />
       </View>
 
       <View style={[s.status, { gap: luar ? 14 : 16 }]}>
@@ -104,16 +125,30 @@ export default function Absensi() {
         </View>
       </View>
 
+      {/* Data karyawan */}
+      <View style={s.karyawan}>
+        <Avatar label={karyawan.nama} size={48} filled />
+        <View style={{ flex: 1 }}>
+          <Text style={s.kNama}>{karyawan.nama}</Text>
+          <Text style={s.kInfo}>NIK {karyawan.nik}  •  {karyawan.jabatan}</Text>
+          <Text style={s.kInfo}>Departemen {karyawan.departemen}</Text>
+        </View>
+      </View>
+
       {!luar ? (
         <Pressable style={s.selfie} onPress={ambilSelfie}>
-          {foto ? <Image source={{ uri: foto }} style={s.foto} /> : (
+          {foto ? (
+            <Image source={{ uri: foto }} style={s.foto} />
+          ) : MODE_SS ? (
+            <Avatar label={karyawan.nama} size={64} />
+          ) : (
             <View style={s.foto}><Icon name="camera" size={26} /></View>
           )}
           <View style={{ flex: 1 }}>
             <Text style={s.selfieJudul}>Foto selfie</Text>
-            <Text style={s.selfieIsi}>{foto ? "Ketuk untuk mengambil ulang" : "Pastikan wajah terlihat jelas."}</Text>
+            <Text style={s.selfieIsi}>{adaFoto ? "Foto berhasil diambil" : "Pastikan wajah terlihat jelas."}</Text>
           </View>
-          <View style={s.ambil}><Text style={s.ambilText}>{foto ? "Ulang" : "Ambil"}</Text></View>
+          <View style={s.ambil}><Text style={s.ambilText}>{adaFoto ? "Ulang" : "Ambil"}</Text></View>
         </Pressable>
       ) : null}
     </Screen>
@@ -125,7 +160,10 @@ const s = StyleSheet.create({
   ikon: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.tint, alignItems: "center", justifyContent: "center" },
   statusJudul: { fontSize: 16, color: colors.text, fontFamily: fonts.bold },
   statusIsi: { fontSize: 13.5, lineHeight: 21, color: colors.muted, fontFamily: fonts.medium, marginTop: 4 },
-  selfie: { flexDirection: "row", alignItems: "center", gap: 14, marginTop: 22, paddingTop: 20, borderTopWidth: 1, borderTopColor: colors.border },
+  karyawan: { flexDirection: "row", alignItems: "center", gap: 14, marginTop: 20, padding: 14, borderRadius: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border },
+  kNama: { fontSize: 15, color: colors.text, fontFamily: fonts.bold },
+  kInfo: { fontSize: 12.5, color: colors.muted, fontFamily: fonts.medium, marginTop: 2 },
+  selfie: { flexDirection: "row", alignItems: "center", gap: 14, marginTop: 20, paddingTop: 18, borderTopWidth: 1, borderTopColor: colors.border },
   foto: { width: 64, height: 64, borderRadius: 32, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, alignItems: "center", justifyContent: "center" },
   selfieJudul: { fontSize: 15, color: colors.text, fontFamily: fonts.semi },
   selfieIsi: { fontSize: 13, color: colors.muted, fontFamily: fonts.medium, marginTop: 3, lineHeight: 19 },
